@@ -44,6 +44,7 @@ if [ -z "$devs" ]; then
 	exit 2
 fi
 # "Normalizo" directorio 
+# readlink da el path posta desde la raiz hasta ese dispisitivo
 devs="$(readlink -f $devs)"
 
 dialogdevs=""
@@ -130,6 +131,7 @@ mkdir /mnt/iso
 
 echo -e "\\033[1;33mMontando archivos y particiones...\\033[0m"
 # monta imagen ISO
+#aca podriamos agregar un wget para descargar la iso y no tener que andar paseandola
 mount -o loop AN_PORTEUS2.1_x86_64.iso /mnt/iso
 # monta particion FAT32 
 mount $par1 /mnt/usbFat
