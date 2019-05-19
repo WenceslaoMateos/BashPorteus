@@ -32,7 +32,9 @@
 apt install dialog -y
 
 # Si no se tienen permisos root se cierra el programa
+# el -ne significa not equal
 if [ "$(id -u)" -ne 0 ]; then
+	#los numeritos es para ponerle colorcito
 	echo -e "\\033[0;31mERROR: Se debe ejecutar como ROOT\\033[0m"
 	exit 1
 fi
@@ -42,6 +44,7 @@ echo "Adquiriendo dispositivos..."
 # Busca todos los dispositivos usb
 devs="$(find /dev/disk/by-path | grep -- '-usb-' | grep -v -- '-part[0-9]*$' || true)"
 # Si no hay ningun usb se cierra el programa
+# el -z compara si la longitud de "$devs" es cero
 if [ -z "$devs" ]; then
 	echo -e "\\033[0;31mERROR: no se encontro ningun USB\\033[0m"
 	exit 2
@@ -60,8 +63,10 @@ done
 unset dialogdev
 unset dialogmodel
 # Menu para elegir usb con dialog
+# el -z compara si la longitud de "$device" es cero
 while [ -z "$device" ]; do
 	device="$(eval "dialog --stdout --radiolist 'Seleccionar usb' 12 40 5 $dialogdevs")"
+	#si el dialog anterior por algun motivo falla (osea, devuelve 0 el dialog), termina el script
 	if [ "$?" -ne "0" ]; then
 		exit
 	fi
