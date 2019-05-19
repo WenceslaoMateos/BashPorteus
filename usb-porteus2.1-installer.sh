@@ -29,7 +29,7 @@
 #----------------------------------------------------------------------#
 
 # si no esta instalado, descarga e instala Dialog
-apt-get install dialog -y
+apt install dialog -y
 
 # Si no se tienen permisos root se cierra el programa
 if [ "$(id -u)" -ne 0 ]; then
