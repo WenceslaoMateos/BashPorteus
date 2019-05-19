@@ -11,6 +11,9 @@
 # 4. Demás errores que comenten en el campus virtual.
 
 
+#Luego de la primera prueba, en las dos condiciones de error pasadas, el equipo funciona correctamente
+#pero el usb no es reconocido por mi computadora, y en la de martin tira un error
+
 #----------------------------------------------------------------------#
 #                        SCRIPT DE BASH
 #                  INSTALACION DE PORTEUS EN USB   
