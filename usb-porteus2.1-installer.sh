@@ -175,8 +175,8 @@ ok
 EOF2
 
 echo -e "\\033[1;33mDesmontando particiones...\\033[0m"
-# se ubica en directorio anteriro y desmonta particiones
-cd $OLDPWD
+# se ubica en directorio anterior y desmonta particiones
+cd $HOME
 umount /mnt/usbExt
 umount /mnt/iso
 umount /mnt/usbFat
