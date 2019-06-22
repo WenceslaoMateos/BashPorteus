@@ -5,14 +5,15 @@
 
 # 2. Al utilizarlo en una PC con una configuración de mas de un HDD, el mismo tiende a fallar.
 
-# 3. Al ser un script de BASH, el mismo solo corre sobre Linux, por lo que se podria crear 
-#   un equivalente en PowerShell para su portabilidad.
-
-# 4. Demás errores que comenten en el campus virtual.
+# 3. Si el usuario al ejecutar el instalador por algun motivo interrumpe el programa, el mismo al volver 
+#   a ser ejecutado no funciona.
 
 
-#Luego de la primera prueba, en las dos condiciones de error pasadas, el equipo funciona correctamente
-#pero el usb no es reconocido por mi computadora, y en la de martin tira un error
+# Luego de la primera prueba, en las dos condiciones de error pasadas, el equipo funciona correctamente
+# pero el usb no es reconocido por mi computadora, y en la de martin tira un error
+
+# Volvimos a probarlo pero esta vez ejecutamos todo desde el home, anduvo perfectamente con la salvedad
+# de que no anda la persistencia.
 
 #----------------------------------------------------------------------#
 #                        SCRIPT DE BASH
@@ -115,11 +116,9 @@ w
 EOF2
 
 # actualiza tabla de particiones del sistema
-
 partprobe
 
 # formatea ambas particiones, en el FileSystem correspondiente
-
 par1="$device"1
 par2="$device"2
 
@@ -129,7 +128,20 @@ s
 EOF
 mkfs.vfat -F 32 $par1
 
+echo -e "\\033[1;33mDesmontando particiones...\\033[0m"
+# se ubica en directorio anterior y desmonta particiones
+umount /mnt/usbExt
+umount /mnt/iso
+umount /mnt/usbFat
+
+echo -e "\\033[1;33mBorrando carpetas viejas...\\033[0m"
+# borra carpetas creadas previamente
+rm -rf /mnt/usbExt
+rm -rf /mnt/iso
+rm -rf /mnt/usbFat
+
 echo -e "\\033[1;33mCreando directorios...\\033[0m"
+
 # crea directorio para montar la particion FAT32
 mkdir /mnt/usbFat
 # crea directorio para montar la particion EXT4
@@ -138,9 +150,10 @@ mkdir /mnt/usbExt
 mkdir /mnt/iso
 
 echo -e "\\033[1;33mMontando archivos y particiones...\\033[0m"
+
 # monta imagen ISO
 #aca podriamos agregar un wget para descargar la iso y no tener que andar paseandola
-mount -o loop AN_PORTEUS2.1_x86_64.iso /mnt/iso
+mount -o loop ./AN_PORTEUS2.1_x86_64.iso /mnt/iso
 # monta particion FAT32 
 mount $par1 /mnt/usbFat
 # montar particion EXT4 
@@ -162,8 +175,8 @@ ok
 EOF2
 
 echo -e "\\033[1;33mDesmontando particiones...\\033[0m"
-# se ubica en directorio anteriro y desmonta particiones
-cd $OLDPWD
+# se ubica en directorio anterior y desmonta particiones
+cd $HOME
 umount /mnt/usbExt
 umount /mnt/iso
 umount /mnt/usbFat
