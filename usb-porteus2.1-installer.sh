@@ -40,39 +40,43 @@ if [ "$(id -u)" -ne 0 ]; then
 	exit 1
 fi
 
+# Si no se tienen permisos root se cierra el programa
+# el -ne significa not equal
+if [ "$(id -u)" -ne 0 ]; then
+	#los numeritos es para ponerle colorcito
+	echo -e "\\033[0;31mERROR: Se debe ejecutar como ROOT\\033[0m"
+	exit 1
+fi
+
 # Si no se tienen permisos root se cierra el programa  
 echo "Adquiriendo dispositivos..."
 # Busca todos los dispositivos usb
-devs="$(find /dev/disk/by-path | grep -- '-usb-' | grep -v -- '-part[0-9]*$' || true)"
+devs=$(find /dev/disk/by-path | grep -- '-usb-' | grep -v -- '-part[0-9]*$' || true)
 # Si no hay ningun usb se cierra el programa
 # el -z compara si la longitud de "$devs" es cero
-if [ -z "$devs" ]; then
+opcion="1"
+while [ -z "$devs" ] && [ $opcion -ne "0" ]; do
 	echo -e "\\033[0;31mERROR: no se encontro ningun USB\\033[0m"
+	echo -e "Inserte dispositivo USB."
+	echo -e "0 - Cancelar"
+	read opcion
+done
+
+if [ $opcion -eq "0" ]; then
 	exit 2
 fi
-# "Normalizo" directorio 
-# readlink da el path posta desde la raiz hasta ese dispisitivo
-devs="$(readlink -f $devs)"
 
-dialogdevs=""
-dialogmodel=""
-# Establezco valores de variables
-for dialogdev in $devs; do
-	dialogmodel="$(lsblk -ndo model "$dialogdev")"
-	dialogdevs="$dialogdevs $dialogdev '$dialogmodel' off"
+devs="$(readlink -f $devs)"
+echo "Seleccione un dispositivo."
+count=0
+for x in $devs; do
+	model="$(lsblk -ndo model "$x")"
+	echo "$count - $x $model"
+	vec[$count]="$x"
+	count=$(($count+1))
 done
-unset dialogdev
-unset dialogmodel
-# Menu para elegir usb con dialog
-# el -z compara si la longitud de "$device" es cero
-while [ -z "$device" ]; do
-	device="$(eval "dialog --stdout --radiolist 'Seleccionar usb' 12 40 5 $dialogdevs")"
-	#si el dialog anterior por algun motivo falla (osea, devuelve 0 el dialog), termina el script
-	if [ "$?" -ne "0" ]; then
-		exit
-	fi
-done
-unset dialogdevs
+read opcion2
+device=${vec["$(($opcion2))"]}
 unset devs
 
 # desmonta particiones que tenga el usb originalmente
