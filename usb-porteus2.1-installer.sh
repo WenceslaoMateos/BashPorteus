@@ -128,6 +128,18 @@ s
 EOF
 mkfs.vfat -F 32 $par1
 
+echo -e "\\033[1;33mDesmontando particiones...\\033[0m"
+# se ubica en directorio anterior y desmonta particiones
+umount /mnt/usbExt
+umount /mnt/iso
+umount /mnt/usbFat
+
+echo -e "\\033[1;33mBorrando carpetas viejas...\\033[0m"
+# borra carpetas creadas previamente
+rm -rf /mnt/usbExt
+rm -rf /mnt/iso
+rm -rf /mnt/usbFat
+
 echo -e "\\033[1;33mCreando directorios...\\033[0m"
 
 # crea directorio para montar la particion FAT32
