@@ -153,7 +153,7 @@ echo -e "\\033[1;33mMontando archivos y particiones...\\033[0m"
 
 # monta imagen ISO
 #aca podriamos agregar un wget para descargar la iso y no tener que andar paseandola
-mount -o loop AN_PORTEUS2.1_x86_64.iso /mnt/iso
+mount -o loop ./AN_PORTEUS2.1_x86_64.iso /mnt/iso
 # monta particion FAT32 
 mount $par1 /mnt/usbFat
 # montar particion EXT4 
