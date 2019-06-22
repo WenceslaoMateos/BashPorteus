@@ -29,9 +29,6 @@
 # 2018
 #----------------------------------------------------------------------#
 
-# si no esta instalado, descarga e instala Dialog
-apt install dialog -y
-
 # Si no se tienen permisos root se cierra el programa
 # el -ne significa not equal
 if [ "$(id -u)" -ne 0 ]; then
@@ -40,15 +37,6 @@ if [ "$(id -u)" -ne 0 ]; then
 	exit 1
 fi
 
-# Si no se tienen permisos root se cierra el programa
-# el -ne significa not equal
-if [ "$(id -u)" -ne 0 ]; then
-	#los numeritos es para ponerle colorcito
-	echo -e "\\033[0;31mERROR: Se debe ejecutar como ROOT\\033[0m"
-	exit 1
-fi
-
-# Si no se tienen permisos root se cierra el programa  
 echo "Adquiriendo dispositivos..."
 # Busca todos los dispositivos usb
 devs=$(find /dev/disk/by-path | grep -- '-usb-' | grep -v -- '-part[0-9]*$' || true)
@@ -59,7 +47,9 @@ while [ -z "$devs" ] && [ $opcion -ne "0" ]; do
 	echo -e "\\033[0;31mERROR: no se encontro ningun USB\\033[0m"
 	echo -e "Inserte dispositivo USB."
 	echo -e "0 - Cancelar"
+	echo -e "Cualquiera para volver a comprobar"
 	read opcion
+	devs=$(find /dev/disk/by-path | grep -- '-usb-' | grep -v -- '-part[0-9]*$' || true)
 done
 
 if [ $opcion -eq "0" ]; then
