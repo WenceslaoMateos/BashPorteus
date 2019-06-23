@@ -1,38 +1,23 @@
 #!/bin/bash
 
-# 1. Si al momento de su ejecución, el usuario no esta en /home/user, elimina el sistema de boteo
-#   actual.
-
-# 2. Al utilizarlo en una PC con una configuración de mas de un HDD, el mismo tiende a fallar.
-
-# 3. Si el usuario al ejecutar el instalador por algun motivo interrumpe el programa, el mismo al volver 
-#   a ser ejecutado no funciona.
-
-
-# Luego de la primera prueba, en las dos condiciones de error pasadas, el equipo funciona correctamente
-# pero el usb no es reconocido por mi computadora, y en la de martin tira un error
-
-# Volvimos a probarlo pero esta vez ejecutamos todo desde el home, anduvo perfectamente con la salvedad
-# de que no anda la persistencia.
-
 #----------------------------------------------------------------------#
 #                        SCRIPT DE BASH
 #                  INSTALACION DE PORTEUS EN USB   
 
-# Version: 0.7
+# Version: 0.8
 
 # UNMDP - Facultad de Ingenieria
 # Catedra: Analisis Numerico Para Ingenieria
 
 # Autores: Belcic Martin, Mateos Wenceslao, Vilchez Sol
 
-# 2018
+# 2019
 #----------------------------------------------------------------------#
 
 # Si no se tienen permisos root se cierra el programa
 # el -ne significa not equal
 if [ "$(id -u)" -ne 0 ]; then
-	#los numeritos es para ponerle colorcito
+	#los numeros es para ponerle formato a las letras
 	echo -e "\\033[0;31mERROR: Se debe ejecutar como ROOT\\033[0m"
 	exit 1
 fi
@@ -40,14 +25,14 @@ fi
 echo "Adquiriendo dispositivos..."
 # Busca todos los dispositivos usb
 devs=$(find /dev/disk/by-path | grep -- '-usb-' | grep -v -- '-part[0-9]*$' || true)
-# Si no hay ningun usb se cierra el programa
+# Si no hay ningun usb se espera que se ingrese uno.
 # el -z compara si la longitud de "$devs" es cero
 opcion="1"
 while [ -z "$devs" ] && [ $opcion -ne "0" ]; do
 	echo -e "\\033[0;31mERROR: no se encontro ningun USB\\033[0m"
 	echo -e "Inserte dispositivo USB."
 	echo -e "0 - Cancelar"
-	echo -e "Cualquiera para volver a comprobar"
+	echo -e "Cualquier tecla para volver a comprobar"
 	read opcion
 	devs=$(find /dev/disk/by-path | grep -- '-usb-' | grep -v -- '-part[0-9]*$' || true)
 done
@@ -68,8 +53,6 @@ done
 read opcion2
 device=${vec["$(($opcion2))"]}
 unset devs
-
-# desmonta particiones que tenga el usb originalmente
 
 # Las particiones que figuran en /proc/mounts se buscan y se guardan en un arreglo
 mapfile -t devicePartitions < <(grep -oP "^\\K$device\\S*" /proc/mounts)
@@ -112,7 +95,7 @@ EOF2
 # actualiza tabla de particiones del sistema
 partprobe
 
-# formatea ambas particiones, en el FileSystem correspondiente
+# setea las variables correspondientes a ambas particiones.
 par1="$device"1
 par2="$device"2
 
@@ -146,7 +129,6 @@ mkdir /mnt/iso
 echo -e "\\033[1;33mMontando archivos y particiones...\\033[0m"
 
 # monta imagen ISO
-#aca podriamos agregar un wget para descargar la iso y no tener que andar paseandola
 mount -o loop ./AN_PORTEUS2.1_x86_64.iso /mnt/iso
 # monta particion FAT32 
 mount $par1 /mnt/usbFat
@@ -169,7 +151,7 @@ ok
 EOF2
 
 echo -e "\\033[1;33mDesmontando particiones...\\033[0m"
-# se ubica en directorio anterior y desmonta particiones
+# se ubica en directorio HOME y desmonta particiones
 cd $HOME
 umount /mnt/usbExt
 umount /mnt/iso
