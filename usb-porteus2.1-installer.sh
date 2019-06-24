@@ -43,14 +43,19 @@ fi
 
 devs="$(readlink -f $devs)"
 echo "Seleccione un dispositivo."
-count=0
+count=-1
 for x in $devs; do
+	count=$(($count+1))
 	model="$(lsblk -ndo model "$x")"
 	echo "$count - $x $model"
 	vec[$count]="$x"
-	count=$(($count+1))
 done
 read opcion2
+
+while [ $opcion2 -gt $count ] || [ $opcion2 -lt "0" ]; do
+		echo "Seleccione un numero de dispositivo valido"
+		read opcion2
+done
 device=${vec["$(($opcion2))"]}
 unset devs
 
