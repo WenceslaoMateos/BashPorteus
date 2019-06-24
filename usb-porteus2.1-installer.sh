@@ -52,13 +52,22 @@ for x in $devs; do
 done
 read opcion2
 
-while [ $opcion2 -gt $count ] || [ $opcion2 -lt "0" ]; do
-		echo "Seleccione un numero de dispositivo valido"
-		read opcion2
+band="1"
+if ! [[ $opcion2 =~ '[^0-9]+' ]]; then
+	band="0"
+fi
+while [ $band -ne "1" ] || [ $opcion2 -gt $count ] || [ $opcion2 -lt "0" ]; do
+	echo "Seleccione un numero de dispositivo valido"
+	read opcion2
+	if ! [[ $opcion2 =~ '[^0-9]+' ]]; then
+		band="0"
+	else
+		band="1"
+	fi
 done
 device=${vec["$(($opcion2))"]}
 unset devs
-
+exit
 # Las particiones que figuran en /proc/mounts se buscan y se guardan en un arreglo
 mapfile -t devicePartitions < <(grep -oP "^\\K$device\\S*" /proc/mounts)
 
