@@ -67,7 +67,6 @@ while [ $band -ne "1" ] || [ $opcion2 -gt $count ] || [ $opcion2 -lt "0" ]; do
 done
 device=${vec["$(($opcion2))"]}
 unset devs
-exit
 # Las particiones que figuran en /proc/mounts se buscan y se guardan en un arreglo
 mapfile -t devicePartitions < <(grep -oP "^\\K$device\\S*" /proc/mounts)
 
