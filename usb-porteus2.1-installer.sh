@@ -56,7 +56,7 @@ band="1"
 if ! [[ $opcion2 =~ '[^0-9]+' ]]; then
 	band="0"
 fi
-while [ $band -ne "1" ] || [ $opcion2 -gt $count ] || [ $opcion2 -lt "0" ]; do
+while [ $band -ne "0" ] || [ $opcion2 -gt $count ] || [ $opcion2 -lt "0" ]; do
 	echo "Seleccione un numero de dispositivo valido"
 	read opcion2
 	if ! [[ $opcion2 =~ '[^0-9]+' ]]; then
